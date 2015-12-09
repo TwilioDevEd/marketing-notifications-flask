@@ -8,6 +8,10 @@ class DevelopmentConfig(DefaultConfig):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///D:\\WORK\\marketing_notifications.db'
 
+    TWILIO_ACCOUNT_SID = 'your_twilio_account_sid'
+    TWILIO_AUTH_TOKEN = 'your_twilio_auth_token'
+    TWILIO_NUMBER = 'your_twilio_phone_number'
+
 
 class TestConfig(DefaultConfig):
     PRESERVE_CONTEXT_ON_EXCEPTION = False
