@@ -1,13 +1,15 @@
 from flask import Flask
+from flask.ext.sqlalchemy import SQLAlchemy
 from marketing_notifications_python.config import config_env_files
 
 
-def configure_app(new_app, config_name='development'):
-    # new_app = Flask(__name__)
-    new_app.config.from_object(config_env_files[config_name])
+def configure_app(flask_app, app_db, config_name='development'):
+    flask_app.config.from_object(config_env_files[config_name])
+    app_db.init_app(flask_app)
 
 
 app = Flask(__name__)
+db = SQLAlchemy()
 import marketing_notifications_python.views
 
-configure_app(app)
+configure_app(app, db)

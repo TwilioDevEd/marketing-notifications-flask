@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-offset-2 col-lg-8">
+        <h1>SMS Notifications</h1>
+
+        <p>Use this form to send MMS notifications to any subscribers.</p>
+
+        <form method="POST" class="form-horizontal" role="form">
+            {% from "_formhelpers.html" import render_errors, render_field %}
+            {{ form.csrf_token }}
+            {{ render_errors(form) }}
+            <hr/>
+
+            {{ render_field(form.message, placeholder='New things are happening!') }}
+            {{ render_field(form.imageUrl, placeholder='http://fake.twilio.com/some_image.png') }}
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div><!--/row-->
+
+{% endblock %}
