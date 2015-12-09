@@ -19,7 +19,7 @@ def upgrade():
     op.create_table('subscribers',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('phone_number', sa.String(), nullable=False),
-    sa.Column('suscribed', sa.Boolean(), nullable=False),
+    sa.Column('subscribed', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     ### end Alembic commands ###

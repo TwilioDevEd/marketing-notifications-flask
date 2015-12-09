@@ -17,8 +17,7 @@
 
 {% macro render_errors(form) %}
     {% if form.errors %}
-<div class="form-errors text-danger">
-    <p><strong>ERRORS:</strong></p>
+<div class="alert alert-danger">
     <ul>
         {% for field, error in form.errors.items() %}
         <li>{{ ', '.join(error) }}</li>

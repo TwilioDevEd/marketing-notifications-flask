@@ -11,6 +11,14 @@
             {% from "_formhelpers.html" import render_errors, render_field %}
             {{ form.csrf_token }}
             {{ render_errors(form) }}
+
+            <!-- messages -->
+            {% for message in get_flashed_messages() %}
+            <div class="alert alert-info">
+                <span>{{ message }}</span>
+            </div>
+
+            {% endfor %}
             <hr/>
 
             {{ render_field(form.message, placeholder='New things are happening!') }}
