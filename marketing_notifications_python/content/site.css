@@ -1,0 +1,15 @@
+/** Site style **/
+
+footer {
+    bottom: 10px;
+    text-align: center;
+}
+
+footer i {
+    color:#ff0000;
+}
+
+.body-content {
+    padding-left: 2%;
+    padding-right: 2%;
+}
