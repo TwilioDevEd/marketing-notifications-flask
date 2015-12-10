@@ -1,4 +1,6 @@
-from marketing_notifications_python import app
+from marketing_notifications_python import get_app
+
+app = get_app()
 
 
 def auth_token():

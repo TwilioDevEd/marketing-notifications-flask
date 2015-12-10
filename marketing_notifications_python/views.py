@@ -1,9 +1,12 @@
 from flask import request, flash
-from marketing_notifications_python import app, db, SUBSCRIBE_COMMAND, UNSUBSCRIBE_COMMAND
-from marketing_notifications_python.forms import SendMessageForm, MessageForm
+from marketing_notifications_python import get_app, get_db, SUBSCRIBE_COMMAND, UNSUBSCRIBE_COMMAND
+from marketing_notifications_python.forms import SendMessageForm
 from marketing_notifications_python.models import Subscriber
 from marketing_notifications_python.twilio.twilio_services import TwilioServices
 from marketing_notifications_python.view_helpers import twiml, view
+
+app = get_app()
+db = get_db()
 
 
 @app.route('/', methods=["GET", "POST"])
@@ -28,17 +31,15 @@ def notifications():
 
 @app.route('/message', methods=["POST"])
 def message():
-    form = MessageForm()
-    if form.validate_on_submit():
-        subscriber = Subscriber.query.filter(Subscriber.phone_number == form.sender).first
-        if subscriber is None:
-            subscriber = Subscriber(phone_number=form.sender)
-            db.session.add(subscriber)
-            db.session.commit()
-            output = "Thanks for contacting TWBC! Text 'subscribe' if you would like to receive updates via text message."
-        else:
-            output = _process_message(form, subscriber)
-            db.session.commit()
+    subscriber = Subscriber.query.filter(Subscriber.phone_number == request.form['From']).first()
+    if subscriber is None:
+        subscriber = Subscriber(phone_number=request.form['From'])
+        db.session.add(subscriber)
+        db.session.commit()
+        output = "Thanks for contacting TWBC! Text 'subscribe' if you would like to receive updates via text message."
+    else:
+        output = _process_message(request.form['Body'], subscriber)
+        db.session.commit()
 
     twilio_services = TwilioServices()
     return twiml(twilio_services.respond_message(output))

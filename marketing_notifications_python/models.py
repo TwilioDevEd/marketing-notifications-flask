@@ -1,4 +1,6 @@
-from marketing_notifications_python import db
+from marketing_notifications_python import get_db
+
+db = get_db()
 
 
 class Subscriber(db.Model):

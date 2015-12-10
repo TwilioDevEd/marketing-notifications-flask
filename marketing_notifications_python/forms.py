@@ -1,7 +1,7 @@
 from flask_wtf import Form
 from werkzeug.datastructures import MultiDict
-from wtforms import TextField, PasswordField, IntegerField
-from wtforms.validators import DataRequired, Length, Email, EqualTo
+from wtforms import TextField
+from wtforms.validators import DataRequired
 
 
 class SendMessageForm(Form):
@@ -11,8 +11,3 @@ class SendMessageForm(Form):
     def reset(self):
         blankData = MultiDict([('message', ''), ('imageUrl', '')])
         self.process(blankData)
-
-
-class MessageForm(Form):
-    sender = TextField('From')
-    body = TextField('Body')
