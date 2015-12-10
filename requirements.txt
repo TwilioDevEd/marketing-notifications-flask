@@ -8,6 +8,7 @@ Flask==0.10.1
 Flask-Migrate==1.6.0
 Flask-Script==2.0.5
 Flask-SQLAlchemy==2.1
+Flask-Testing==0.4.2
 Flask-WTF==0.12
 Foundations==2.1.0
 httplib2==0.9.2
