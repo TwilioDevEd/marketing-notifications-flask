@@ -1,5 +1,4 @@
-import os
-from marketing_notifications_python.boostrap import get_app
+from marketing_notifications_python.bootstrap import get_app
 from marketing_notifications_python.database import get_db
 
 twilio_settings = {
@@ -9,9 +8,8 @@ twilio_settings = {
 
 
 def init_test_environment():
-    os.environ["ENV"] = 'test'
-    twilio_settings['app'] = get_app()
-    twilio_settings['db'] = get_db()
+    twilio_settings['app'] = get_app('test')
+    twilio_settings['db'] = get_db('test')
 
 
 def test_app():

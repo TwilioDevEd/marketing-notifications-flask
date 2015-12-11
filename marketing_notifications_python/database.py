@@ -1,4 +1,3 @@
-from flask.ext.sqlalchemy import SQLAlchemy
 from marketing_notifications_python import get_env
 
 dbs = {
@@ -7,9 +6,15 @@ dbs = {
 }
 
 
-def get_db():
-    config_name = get_env()
+def get_db(config_name=None):
+    if config_name is None:
+        config_name = get_env()
 
-    if dbs[config_name] is None:
-        dbs[config_name] = SQLAlchemy()
     return dbs[config_name]
+
+
+def set_db(db, config_name=None):
+    if config_name is None:
+        config_name = get_env()
+
+    dbs[config_name] = db

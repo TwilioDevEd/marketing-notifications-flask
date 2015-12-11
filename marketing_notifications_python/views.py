@@ -51,16 +51,16 @@ def construct_view_blueprint(app, db):
         twilio_services = TwilioServices()
         return twiml(twilio_services.respond_message(output))
 
-    def _process_message(form, subscriber):
+    def _process_message(message, subscriber):
         output = "Sorry, we don't recognize that command. Available commands are: 'subscribe' or 'unsubscribe'."
 
         if message.startswith(SUBSCRIBE_COMMAND) or message.startswith(UNSUBSCRIBE_COMMAND):
             subscriber.subscribed = message.startswith(SUBSCRIBE_COMMAND)
 
             if subscriber.subscribed:
-                output = "You have unsubscribed from notifications. Text 'subscribe' to start receiving updates again"
-            else:
                 output = "You are now subscribed for updates."
+            else:
+                output = "You have unsubscribed from notifications. Text 'subscribe' to start receiving updates again"
 
         return output
 
