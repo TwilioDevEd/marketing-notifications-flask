@@ -10,7 +10,7 @@ class TwilioServices:
         if TwilioServices.twilio_client is None:
             TwilioServices.twilio_client = TwilioRestClient(account_sid(), auth_token())
 
-    def sendMessage(self, to, message, image_url):
+    def send_message(self, to, message, image_url):
         TwilioServices.twilio_client.messages.create(
             to=to,
             from_=phone_number(),

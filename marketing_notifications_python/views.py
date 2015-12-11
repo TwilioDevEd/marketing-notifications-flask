@@ -27,7 +27,7 @@ def construct_view_blueprint(app, db):
                 flash('Messages on their way!')
                 twilio_services = TwilioServices()
                 for s in subscribers:
-                    twilio_services.sendMessage(s.phone_number, form.message.data, form.imageUrl.data)
+                    twilio_services.send_message(s.phone_number, form.message.data, form.imageUrl.data)
             else:
                 flash('No subscribers found!')
 
