@@ -1,0 +1,131 @@
+<!DOCTYPE html><html><head><title>SMS and MMS Marketing Notifications</title><style>body, html {
+  height:100%;
+  width:100%;
+  padding:0;
+  margin:0;
+  overflow:hidden;
+  background-color:#ddd;
+}
+.wrapper {
+  height:100%;
+  width:100%;
+}</style><link rel="shortcut icon" href="//twilio.com/bundles/marketing/img/favicons/favicon.ico"><link rel="apple-touch-icon" href="//twilio.com/bundles/marketing/img/favicons/favicon_57.png"><link rel="apple-touch-icon" sizes="72x72" href="//twilio.com/bundles/marketing/img/favicons/favicon_72.png"><link rel="apple-touch-icon" sizes="114x114" href="//twilio.com/bundles/marketing/img/favicons/favicon_114.png"><link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"><link rel="stylesheet" href="viewsaurus.css"></head><body><div class="wrapper"><div id="viewsaurus" data-title="SMS and MMS Marketing Notifications"><div class="saurus-panes"><div class="saurus-prose"><div class="saurus-prose-header"><div class="title-outer"><span class="step-title">SMS and MMS Marketing Notifications</span></div></div><div class="saurus-nav-buttons"><div class="saurus-nav-button nav-overview"><div class="saurus-nav-button-inner"><i class="fa fa-fw fa-list"></i></div><div class="nav-divider"></div></div><div class="saurus-nav-button nav-previous"><div class="saurus-nav-button-inner"><a href=""> <i class="fa fa-fw fa-play fa-rotate-180"></i></a></div><div class="nav-divider"></div></div><div class="saurus-nav-button nav-next clickable"><div class="saurus-nav-button-inner"><a href="#1"> <i class="fa fa-fw fa-play"></i></a></div></div><div class="saurus-next-title"><span class="next-title-inner"></span></div></div><div class="saurus-progress-bar"></div><div class="saurus-start"><p>SMS and MMS messages are a personal way to engage with users, offering a much higher open rate than e-mail and more impact than a tweet. Learn how to engage customers in a mobile marketing campaign using SMS and MMS messages.</p><a href="#0">Start Tutorial</a></div><div class="saurus-content"><div data-title="Introduction" data-file="marketing_notifications_python/bootstrap.py" class="step"><h2 id="sms-and-mms-marketing-notifications">SMS and MMS Marketing Notifications</h2>
+<p>Ready to implement SMS and MMS marketing notifications? Here&#39;s how it works
+at a high level:</p>
+<ol>
+<li>A user you&#39;d like to reach sends an SMS text message to a Twilio phone
+number you advertise in print, online, or in TV advertising.</li>
+<li>Your application confirms that the user wants to receive SMS and MMS
+notifications from your application.</li>
+<li>An administrator or marketing campaign manager uses a web form to craft a
+message that will go out to all subscribers via SMS/MMS message.</li>
+</ol>
+<h2 id="building-blocks">Building Blocks</h2>
+<p>To get this done, you&#39;ll be working with the following Twilio APIs:</p>
+<ul>
+<li><a href="//www.local.twilio.com/docs/api/twiml">TwiML</a> and the <a href="/docs/api/twiml/sms/message">&lt;Message&gt;
+Verb</a>: We&#39;ll use TwiML to manage interactions
+initiated by the user via SMS.</li>
+<li><a href="/docs/api/rest/sending-sms">Messages Resource</a>: We will use the REST API
+to broadcast messages out to all subscribers.</li>
+</ul>
+<p>Let&#39;s get started! Click the right arrow to move on to the next step of the
+tutorial.</p>
+<p><strong>See Also</strong></p>
+<ul>
+<li><a href="http://flask.pocoo.org/">Web development with Python and Flask</a></li>
+</ul>
+</div><div data-title="Subscriber" data-file="marketing_notifications_python/models/subscriber.py" class="step"><h2 id="subscriber">Subscriber</h2>
+<p>In order to send out marketing notifications to a subscriber, we need to
+provide the right model.</p>
+<ul>
+<li>The <code>phone_number</code> will allow the application to know where to send the
+notifications.</li>
+<li><code>subscribed</code> let the application to identify which subscribers are
+active, only an active subscriber will receive notifications.</li>
+</ul>
+<p><strong>See Also</strong></p>
+<ul>
+<li><a href="https://flask-migrate.readthedocs.org/en/latest/">Database Migrations in Flask</a></li>
+</ul>
+</div><div data-title="Handling Incoming Messages" data-file="marketing_notifications_python/views.py" data-highlight="38-52" class="step"><h2 id="handling-incoming-messages">Handling Incoming messages</h2>
+<p>This is the endpoint that will be called every time our application receives
+a message.</p>
+<p>We begin by getting the texter&#39;s phone number from the incoming <a href="/docs/api/twiml/sms/twilio_request">Twilio
+request</a>. Now, we need to find a
+<code>Subscriber</code> model with that phone number.</p>
+<p>If there&#39;s no subscriber with this phone number, we create one, save it, and
+respond with a message asking them to text &quot;subscribe&quot; to confirm that
+they want to receive messages from us.</p>
+<p><strong>See Also:</strong></p>
+<ul>
+<li><a href="//www.twilio.com/docs/quickstart/python/twiml">Twilio TwiML</a></li>
+</ul>
+</div><div data-title="Replying received messages" data-file="marketing_notifications_python/twilio/twilio_services.py" data-highlight="21-24" class="step"><h2 id="replying-received-messages">Replying received messages</h2>
+<p>Once we had received the Twilio request with the texter information and
+registered the number successfully, we can ask Twilio to reply with an SMS
+text message, by creating a <code>twiml.Response</code> and calling <code>message</code> method on
+the created object passing it the desired text.</p>
+<p><strong>See Also:</strong></p>
+<ul>
+<li><a href="//www.twilio.com/docs/quickstart/python/sms/replying-to-sms-messages">Replying Twilio messages</a></li>
+</ul>
+</div><div data-title="Manage Subscriptions" data-file="marketing_notifications_python/views.py" data-highlight="54-65" class="step"><h2 id="manage-subscriptions">Manage Subscriptions</h2>
+<p>We want to provide the user with two SMS commands to manage their
+subscription status: <code>subscribe</code> and <code>unsubscribe</code>.  These commands will
+toggle a boolean flag for their <code>Subscriber</code> record in the database, and
+will determine whether or not they receive messages from our marketing
+campaign. Because we&#39;re not jerks, we don&#39;t opt them in automatically -
+rather, we have them confirm that they want to receive messages from us
+first.</p>
+<p>To make this happen, we will need to update the controller logic which
+handles the incoming text message to do a couple things:</p>
+<ul>
+<li>If the texter is a person already in the database, parse the message
+they sent to see if it&#39;s a command we recognize.</li>
+<li>If it is a <code>subscribe</code> or <code>unsubscribe</code> command, update their
+subscription status in the database.</li>
+<li>If it is a command we don&#39;t recognize, send them a message explaining
+available commands.</li>
+</ul>
+</div><div data-title="Sending Notifications" data-file="marketing_notifications_python/views.py" data-highlight="20-37" class="step"><h2 id="sending-notifications">Sending Notifications</h2>
+<p>On the server, we grab the message text and image URL, then loop through all
+Subscribers and call the method <code>send_message</code> on our <code>TwilioServices</code> domain object
+to send the message.</p>
+<p>When the messages are on their way, we redirect back to the same form
+with a request custom <code>flash</code> attribute message containing feedback about
+the messaging attempt.</p>
+</div><div data-title="Send SMS or MMS Notifications" data-file="marketing_notifications_python/twilio/twilio_services.py" data-highlight="13-19" class="step"><h2 id="send-sms-or-mms-notifications">Send SMS or MMS Notifications</h2>
+<p>Now that we have a list of subscribers for our awesome SMS and MMS content,
+we need to provide our marketing team some kind of interface to send out
+messages.</p>
+<p>When the model object is loaded, it creates a <a href="https://github.com/twilio/twilio-python">Twilio REST API
+client</a> that it can use to send SMS and
+MMS messages. The client requires your Twilio account credentials (an
+account SID and auth token), which can be found <a href="/user/account">in the account
+portal</a>.</p>
+<p>Next all we need to do is call <code>messages.create</code> on the client object in
+order to send our message. The Twilio Message API call requires a &#39;From&#39; and
+&#39;To&#39; parameter, and either a &#39;Body&#39; or a &#39;MediaUrl&#39; attribute (or both).</p>
+</div><div data-title="Where to Next?" class="step"><h2 id="where-to-next-">Where to Next?</h2>
+<p>That&#39;s it! We&#39;ve just implemented a an opt-in process and an administrative
+interface to run an SMS and MMS marketing campaign. Now all you need is
+killer content to share with your users via text or MMS.</p>
+<p>If you&#39;re a Python | Flask developer working with Twilio, you might enjoy these
+other tutorials:</p>
+<p><a href="//www.twilio.com/docs/tutorials/walkthrough/appointment-reminders/python/flask"><strong>Appointment reminders</strong></a></p>
+<p>Automate the process of reaching out to your customers in advance of an
+upcoming appointment.</p>
+<p><a href="//www.twilio.com/docs/tutorials/walkthrough/click-to-call/python/flask"><strong>Click To Call</strong></a></p>
+<p>Convert your company web traffic into phone calls with the click of a button.</p>
+<h3 id="did-this-help-">Did this help?</h3>
+<p>Thanks for checking out this tutorial! If you have any feedback to share
+with us, we&#39;d love to hear it. Tweet
+<a href="http://twitter.com/twilio">@twilio</a> to let us know what you think.</p>
+</div>
+<div class="saurus-files" style="display:none;"><textarea class="saurus-file" data-file="marketing_notifications_python/bootstrap.py" data-mode="python">ZnJvbSBmbGFzay5leHQuc3FsYWxjaGVteSBpbXBvcnQgU1FMQWxjaGVteQoKZnJvbSBmbGFzayBpbXBvcnQgRmxhc2sKZnJvbSBtYXJrZXRpbmdfbm90aWZpY2F0aW9uc19weXRob24gaW1wb3J0IGdldF9lbnYKZnJvbSBtYXJrZXRpbmdfbm90aWZpY2F0aW9uc19weXRob24uY29uZmlnIGltcG9ydCBjb25maWdfZW52X2ZpbGVzCmZyb20gbWFya2V0aW5nX25vdGlmaWNhdGlvbnNfcHl0aG9uLmRhdGFiYXNlIGltcG9ydCBzZXRfZGIKZnJvbSBtYXJrZXRpbmdfbm90aWZpY2F0aW9uc19weXRob24udmlld3MgaW1wb3J0IGNvbnN0cnVjdF92aWV3X2JsdWVwcmludAoKYXBwcyA9IHsKICAgICd0ZXN0JzogTm9uZSwKICAgICdkZXZlbG9wbWVudCc6IE5vbmUsCn0KCgpkZWYgZ2V0X2FwcChjb25maWdfbmFtZT1Ob25lKToKICAgIGlmIGNvbmZpZ19uYW1lIGlzIE5vbmU6CiAgICAgICAgY29uZmlnX25hbWUgPSBnZXRfZW52KCkKCiAgICBpZiBhcHBzW2NvbmZpZ19uYW1lXSBpcyBOb25lOgogICAgICAgIGFwcHNbY29uZmlnX25hbWVdID0gaW5pdF9hcHAoY29uZmlnX25hbWUpCiAgICByZXR1cm4gYXBwc1tjb25maWdfbmFtZV0KCgpkZWYgaW5pdF9hcHAoY29uZmlnX25hbWUpOgogICAgZmxhc2tfYXBwID0gRmxhc2soX19uYW1lX18pCiAgICBfY29uZmlndXJlX2FwcChmbGFza19hcHAsIGNvbmZpZ19uYW1lKQogICAgcmV0dXJuIGZsYXNrX2FwcAoKCmRlZiBfY29uZmlndXJlX2FwcChmbGFza19hcHAsIGNvbmZpZ19uYW1lKToKICAgIGZsYXNrX2FwcC5jb25maWcuZnJvbV9vYmplY3QoY29uZmlnX2Vudl9maWxlc1tjb25maWdfbmFtZV0pCiAgICBhcHBfZGIgPSBTUUxBbGNoZW15KGZsYXNrX2FwcCkKICAgIHNldF9kYihhcHBfZGIsIGNvbmZpZ19uYW1lKQogICAgZmxhc2tfYXBwLnJlZ2lzdGVyX2JsdWVwcmludChjb25zdHJ1Y3Rfdmlld19ibHVlcHJpbnQoZmxhc2tfYXBwLCBhcHBfZGIpKQo=</textarea>
+<textarea class="saurus-file" data-file="marketing_notifications_python/models/subscriber.py" data-mode="python">ZnJvbSBtYXJrZXRpbmdfbm90aWZpY2F0aW9uc19weXRob24ubW9kZWxzIGltcG9ydCBhcHBfZGIKCmRiID0gYXBwX2RiKCkKCgpjbGFzcyBTdWJzY3JpYmVyKGRiLk1vZGVsKToKICAgIF9fdGFibGVuYW1lX18gPSAic3Vic2NyaWJlcnMiCgogICAgaWQgPSBkYi5Db2x1bW4oZGIuSW50ZWdlciwgcHJpbWFyeV9rZXk9VHJ1ZSkKICAgIHBob25lX251bWJlciA9IGRiLkNvbHVtbihkYi5TdHJpbmcsIG51bGxhYmxlPUZhbHNlKQogICAgc3Vic2NyaWJlZCA9IGRiLkNvbHVtbihkYi5Cb29sZWFuLCBudWxsYWJsZT1GYWxzZSwgZGVmYXVsdD1UcnVlKQoKICAgIGRlZiBfX3JlcHJfXyhzZWxmKToKICAgICAgICByZXR1cm4gJzxTdWJzY3JpYmVyICVyICVyPicgJSBzZWxmLnBob25lX251bWJlciwgc2VsZi5zdWJzY3JpYmVkCg==</textarea>
+<textarea class="saurus-file" data-file="marketing_notifications_python/views.py" data-mode="python">ZnJvbSBmbGFzayBpbXBvcnQgcmVxdWVzdCwgZmxhc2gKZnJvbSBtYXJrZXRpbmdfbm90aWZpY2F0aW9uc19weXRob24uZm9ybXMgaW1wb3J0IFNlbmRNZXNzYWdlRm9ybQpmcm9tIG1hcmtldGluZ19ub3RpZmljYXRpb25zX3B5dGhvbi5tb2RlbHMgaW1wb3J0IGluaXRfbW9kZWxzX21vZHVsZQpmcm9tIG1hcmtldGluZ19ub3RpZmljYXRpb25zX3B5dGhvbi50d2lsaW8gaW1wb3J0IGluaXRfdHdpbGlvX21vZHVsZQpmcm9tIG1hcmtldGluZ19ub3RpZmljYXRpb25zX3B5dGhvbi52aWV3X2hlbHBlcnMgaW1wb3J0IHR3aW1sLCB2aWV3CmZyb20gZmxhc2sgaW1wb3J0IEJsdWVwcmludApmcm9tIG1hcmtldGluZ19ub3RpZmljYXRpb25zX3B5dGhvbi50d2lsaW8udHdpbGlvX3NlcnZpY2VzIGltcG9ydCBUd2lsaW9TZXJ2aWNlcwoKCmRlZiBjb25zdHJ1Y3Rfdmlld19ibHVlcHJpbnQoYXBwLCBkYik6CiAgICBTVUJTQ1JJQkVfQ09NTUFORCA9ICJzdWJzY3JpYmUiCiAgICBVTlNVQlNDUklCRV9DT01NQU5EID0gInVuc3Vic2NyaWJlIgoKICAgIHZpZXdzID0gQmx1ZXByaW50KCJ2aWV3cyIsIF9fbmFtZV9fKQoKICAgIGluaXRfdHdpbGlvX21vZHVsZShhcHApCiAgICBpbml0X21vZGVsc19tb2R1bGUoZGIpCiAgICBmcm9tIG1hcmtldGluZ19ub3RpZmljYXRpb25zX3B5dGhvbi5tb2RlbHMuc3Vic2NyaWJlciBpbXBvcnQgU3Vic2NyaWJlcgoKICAgIEB2aWV3cy5yb3V0ZSgnLycsIG1ldGhvZHM9WyJHRVQiLCAiUE9TVCJdKQogICAgQHZpZXdzLnJvdXRlKCcvbm90aWZpY2F0aW9ucycsIG1ldGhvZHM9WyJHRVQiLCAiUE9TVCJdKQogICAgZGVmIG5vdGlmaWNhdGlvbnMoKToKICAgICAgICBmb3JtID0gU2VuZE1lc3NhZ2VGb3JtKCkKICAgICAgICBpZiByZXF1ZXN0Lm1ldGhvZCA9PSAnUE9TVCcgYW5kIGZvcm0udmFsaWRhdGVfb25fc3VibWl0KCk6CiAgICAgICAgICAgIHN1YnNjcmliZXJzID0gU3Vic2NyaWJlci5xdWVyeS5maWx0ZXIoU3Vic2NyaWJlci5zdWJzY3JpYmVkKS5hbGwoKQogICAgICAgICAgICBpZiBsZW4oc3Vic2NyaWJlcnMpID4gMDoKICAgICAgICAgICAgICAgIGZsYXNoKCdNZXNzYWdlcyBvbiB0aGVpciB3YXkhJykKICAgICAgICAgICAgICAgIHR3aWxpb19zZXJ2aWNlcyA9IFR3aWxpb1NlcnZpY2VzKCkKICAgICAgICAgICAgICAgIGZvciBzIGluIHN1YnNjcmliZXJzOgogICAgICAgICAgICAgICAgICAgIHR3aWxpb19zZXJ2aWNlcy5zZW5kTWVzc2FnZShzLnBob25lX251bWJlciwgZm9ybS5tZXNzYWdlLmRhdGEsIGZvcm0uaW1hZ2VVcmwuZGF0YSkKICAgICAgICAgICAgZWxzZToKICAgICAgICAgICAgICAgIGZsYXNoKCdObyBzdWJzY3JpYmVycyBmb3VuZCEnKQoKICAgICAgICAgICAgZm9ybS5yZXNldCgpCiAgICAgICAgICAgIHJldHVybiB2aWV3KCdub3RpZmljYXRpb25zJywgZm9ybSkKCiAgICAgICAgcmV0dXJuIHZpZXcoJ25vdGlmaWNhdGlvbnMnLCBmb3JtKQoKICAgIEB2aWV3cy5yb3V0ZSgnL21lc3NhZ2UnLCBtZXRob2RzPVsiUE9TVCJdKQogICAgZGVmIG1lc3NhZ2UoKToKICAgICAgICBzdWJzY3JpYmVyID0gU3Vic2NyaWJlci5xdWVyeS5maWx0ZXIoU3Vic2NyaWJlci5waG9uZV9udW1iZXIgPT0gcmVxdWVzdC5mb3JtWydGcm9tJ10pLmZpcnN0KCkKICAgICAgICBpZiBzdWJzY3JpYmVyIGlzIE5vbmU6CiAgICAgICAgICAgIHN1YnNjcmliZXIgPSBTdWJzY3JpYmVyKHBob25lX251bWJlcj1yZXF1ZXN0LmZvcm1bJ0Zyb20nXSkKICAgICAgICAgICAgZGIuc2Vzc2lvbi5hZGQoc3Vic2NyaWJlcikKICAgICAgICAgICAgZGIuc2Vzc2lvbi5jb21taXQoKQogICAgICAgICAgICBvdXRwdXQgPSAiVGhhbmtzIGZvciBjb250YWN0aW5nIFRXQkMhIFRleHQgJ3N1YnNjcmliZScgaWYgeW91IHdvdWxkIGxpa2UgdG8gcmVjZWl2ZSB1cGRhdGVzIHZpYSB0ZXh0IG1lc3NhZ2UuIgogICAgICAgIGVsc2U6CiAgICAgICAgICAgIG91dHB1dCA9IF9wcm9jZXNzX21lc3NhZ2UocmVxdWVzdC5mb3JtWydCb2R5J10sIHN1YnNjcmliZXIpCiAgICAgICAgICAgIGRiLnNlc3Npb24uY29tbWl0KCkKCiAgICAgICAgdHdpbGlvX3NlcnZpY2VzID0gVHdpbGlvU2VydmljZXMoKQogICAgICAgIHJldHVybiB0d2ltbCh0d2lsaW9fc2VydmljZXMucmVzcG9uZF9tZXNzYWdlKG91dHB1dCkpCgogICAgZGVmIF9wcm9jZXNzX21lc3NhZ2UobWVzc2FnZSwgc3Vic2NyaWJlcik6CiAgICAgICAgb3V0cHV0ID0gIlNvcnJ5LCB3ZSBkb24ndCByZWNvZ25pemUgdGhhdCBjb21tYW5kLiBBdmFpbGFibGUgY29tbWFuZHMgYXJlOiAnc3Vic2NyaWJlJyBvciAndW5zdWJzY3JpYmUnLiIKCiAgICAgICAgaWYgbWVzc2FnZS5zdGFydHN3aXRoKFNVQlNDUklCRV9DT01NQU5EKSBvciBtZXNzYWdlLnN0YXJ0c3dpdGgoVU5TVUJTQ1JJQkVfQ09NTUFORCk6CiAgICAgICAgICAgIHN1YnNjcmliZXIuc3Vic2NyaWJlZCA9IG1lc3NhZ2Uuc3RhcnRzd2l0aChTVUJTQ1JJQkVfQ09NTUFORCkKCiAgICAgICAgICAgIGlmIHN1YnNjcmliZXIuc3Vic2NyaWJlZDoKICAgICAgICAgICAgICAgIG91dHB1dCA9ICJZb3UgYXJlIG5vdyBzdWJzY3JpYmVkIGZvciB1cGRhdGVzLiIKICAgICAgICAgICAgZWxzZToKICAgICAgICAgICAgICAgIG91dHB1dCA9ICJZb3UgaGF2ZSB1bnN1YnNjcmliZWQgZnJvbSBub3RpZmljYXRpb25zLiBUZXh0ICdzdWJzY3JpYmUnIHRvIHN0YXJ0IHJlY2VpdmluZyB1cGRhdGVzIGFnYWluIgoKICAgICAgICByZXR1cm4gb3V0cHV0CgogICAgcmV0dXJuIHZpZXdzCg==</textarea>
+<textarea class="saurus-file" data-file="marketing_notifications_python/twilio/twilio_services.py" data-mode="python">ZnJvbSBtYXJrZXRpbmdfbm90aWZpY2F0aW9uc19weXRob24udHdpbGlvIGltcG9ydCBhY2NvdW50X3NpZCwgYXV0aF90b2tlbiwgcGhvbmVfbnVtYmVyCmZyb20gdHdpbGlvIGltcG9ydCB0d2ltbApmcm9tIHR3aWxpby5yZXN0IGltcG9ydCBUd2lsaW9SZXN0Q2xpZW50CgoKY2xhc3MgVHdpbGlvU2VydmljZXM6CiAgICB0d2lsaW9fY2xpZW50ID0gTm9uZQoKICAgIGRlZiBfX2luaXRfXyhzZWxmKToKICAgICAgICBpZiBUd2lsaW9TZXJ2aWNlcy50d2lsaW9fY2xpZW50IGlzIE5vbmU6CiAgICAgICAgICAgIFR3aWxpb1NlcnZpY2VzLnR3aWxpb19jbGllbnQgPSBUd2lsaW9SZXN0Q2xpZW50KGFjY291bnRfc2lkKCksIGF1dGhfdG9rZW4oKSkKCiAgICBkZWYgc2VuZE1lc3NhZ2Uoc2VsZiwgdG8sIG1lc3NhZ2UsIGltYWdlX3VybCk6CiAgICAgICAgVHdpbGlvU2VydmljZXMudHdpbGlvX2NsaWVudC5tZXNzYWdlcy5jcmVhdGUoCiAgICAgICAgICAgIHRvPXRvLAogICAgICAgICAgICBmcm9tXz1waG9uZV9udW1iZXIoKSwKICAgICAgICAgICAgYm9keT1tZXNzYWdlLAogICAgICAgICAgICBtZWRpYV91cmw9aW1hZ2VfdXJsCiAgICAgICAgKQoKICAgIGRlZiByZXNwb25kX21lc3NhZ2Uoc2VsZiwgbWVzc2FnZSk6CiAgICAgICAgcmVzcG9uc2UgPSB0d2ltbC5SZXNwb25zZSgpCiAgICAgICAgcmVzcG9uc2UubWVzc2FnZShtZXNzYWdlKQogICAgICAgIHJldHVybiByZXNwb25zZQo=</textarea>
+</div>
+</div><div class="saurus-overview"><ul></ul></div></div><div class="saurus-code"><div class="file-path"><span class="crumb-container"></span><i class="fa fa-fw fa-folder"></i></div><div class="saurus-editor"></div></div><div class="saurus-explorer"><div class="saurus-file-list"></div><a href="https://github.com/TwilioDevEd/marketing-notifications-python" target="_blank" class="explorer-get-code"> <i class="fa fa-lg fa-github-square"> </i>View Code on GitHub</a></div></div></div></div><script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script><script src="ace/ace.js"></script><script src="ace/theme-monokai.js"></script><script src="viewsaurus.js"></script></body></html>
