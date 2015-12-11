@@ -8,13 +8,13 @@ class ViewHelperTests(BaseTestCase):
     # Ensures 'redirect_to' redirect you to the same place as 'redirect'
     def test_redirect_to_redirects_to_same_location_of_redirect(self):
         # assert
-        assert redirect_to('notifications').location == redirect(url_for('notifications')).location
+        assert redirect_to('views.notifications').location == redirect(url_for('views.notifications')).location
 
     # Ensures 'redirect_to' redirect you to the same place as 'redirect' with routes params
     def test_redirect_to_redirects_to_same_location_of_redirect_with_route_params(self):
         # assert
-        assert redirect_to('notifications').location == redirect(
-            url_for('notifications')).location
+        assert redirect_to('views.notifications').location == redirect(
+            url_for('views.notifications')).location
 
     # Ensures 'view' renders the same template that 'render_template'
     def test_view_renders_the_same_template_as_render_template(self):

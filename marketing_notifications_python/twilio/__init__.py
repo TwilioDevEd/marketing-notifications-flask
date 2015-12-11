@@ -1,15 +1,19 @@
-from marketing_notifications_python import get_app
+twilio_settings = {
+    'app': None,
+}
 
-app = get_app()
+
+def init_twilio_module(flask_app):
+    twilio_settings['app'] = flask_app
 
 
 def auth_token():
-    return app.config['TWILIO_AUTH_TOKEN']
+    return twilio_settings['app'].config['TWILIO_AUTH_TOKEN']
 
 
 def phone_number():
-    return app.config['TWILIO_NUMBER']
+    return twilio_settings['app'].config['TWILIO_NUMBER']
 
 
 def account_sid():
-    return app.config['TWILIO_ACCOUNT_SID']
+    return twilio_settings['app'].config['TWILIO_ACCOUNT_SID']

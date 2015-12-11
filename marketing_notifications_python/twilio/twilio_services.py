@@ -1,5 +1,5 @@
-from twilio import twiml
 from marketing_notifications_python.twilio import account_sid, auth_token, phone_number
+from twilio import twiml
 from twilio.rest import TwilioRestClient
 
 

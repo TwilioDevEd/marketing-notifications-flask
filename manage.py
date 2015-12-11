@@ -1,6 +1,7 @@
-from marketing_notifications_python import get_app, get_db
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
+from marketing_notifications_python.boostrap import get_app
+from marketing_notifications_python.database import get_db
 
 app = get_app()
 db = get_db()
