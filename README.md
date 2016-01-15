@@ -27,7 +27,7 @@ Use Twilio to create sms notifications to keep your subscribers in the loop.
 
 1. Clone this repository and `cd` into its directory:
     ```
-    git clone git@github.com:TwilioDevEd/marketing-notifications-servlets.git
+    git clone git@github.com:TwilioDevEd/marketing-notifications-python.git
     ```
 
 1. Create a new virtual environment:
@@ -44,7 +44,7 @@ Use Twilio to create sms notifications to keep your subscribers in the loop.
         mkvirtualenv account-verification-flask
         ```
 
-1. Install the requirements:
+1. Install the requirements using [pip](https://pip.pypa.io/en/stable/installing/):
 
     ```
     pip install -r requirements.txt
@@ -52,7 +52,7 @@ Use Twilio to create sms notifications to keep your subscribers in the loop.
 1. Edit the following keys/values for the `config.py` file inside the  `marketing-notifications-python/` directory. Be sure to replace the place holders and connection string with real information
 
     ```
-  AUTHY_KEY = 'your_authy_key'
+  SECRET_KEY = 'your_authy_secret_key'
 
   TWILIO_ACCOUNT_SID = '[your_twilio_account_sid]'
   TWILIO_AUTH_TOKEN = '[your_twilio_auth_token]'
