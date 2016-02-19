@@ -1,7 +1,7 @@
 # SMS Notifications with Twilio and Python | Flask
 
 [![Build Status](https://travis-ci.org/TwilioDevEd/marketing-notifications-python.svg?branch=master)]
-(https://travis-ci.org/TwilioDevEd/marketing-notifications-python)
+(https://travis-ci.org/TwilioDevEd/marketing-notifications-flask)
 
 Use Twilio to create sms notifications to keep your subscribers in the loop.
 
