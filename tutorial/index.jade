@@ -62,7 +62,7 @@
     `Subscriber` model with that phone number.
 
     If there's no subscriber with this phone number, we create one, save it, and
-    respond with a message asking them to text "subscribe" to confirm that
+    respond with a message asking them to text "add" to confirm that
     they want to receive messages from us.
 
     **See Also:**
@@ -92,7 +92,7 @@
     ## Manage Subscriptions
 
     We want to provide the user with two SMS commands to manage their
-    subscription status: `subscribe` and `unsubscribe`.  These commands will
+    subscription status: `add` and `remove`.  These commands will
     toggle a boolean flag for their `Subscriber` record in the database, and
     will determine whether or not they receive messages from our marketing
     campaign. Because we're not jerks, we don't opt them in automatically -
@@ -104,7 +104,7 @@
 
     * If the texter is a person already in the database, parse the message
     they sent to see if it's a command we recognize.
-    * If it is a `subscribe` or `unsubscribe` command, update their
+    * If it is a `add` or `remove` command, update their
     subscription status in the database.
     * If it is a command we don't recognize, send them a message explaining
     available commands.
