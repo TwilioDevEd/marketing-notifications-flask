@@ -8,8 +8,8 @@ from marketing_notifications_python.twilio.twilio_services import TwilioServices
 
 
 def construct_view_blueprint(app, db):
-    SUBSCRIBE_COMMAND = "subscribe"
-    UNSUBSCRIBE_COMMAND = "unsubscribe"
+    SUBSCRIBE_COMMAND = "add"
+    UNSUBSCRIBE_COMMAND = "remove"
 
     views = Blueprint("views", __name__)
 
@@ -43,7 +43,7 @@ def construct_view_blueprint(app, db):
             subscriber = Subscriber(phone_number=request.form['From'])
             db.session.add(subscriber)
             db.session.commit()
-            output = "Thanks for contacting TWBC! Text 'subscribe' if you would like to receive updates via text message."
+            output = "Thanks for contacting TWBC! Text 'add' if you would like to receive updates via text message."
         else:
             output = _process_message(request.form['Body'], subscriber)
             db.session.commit()
@@ -52,7 +52,7 @@ def construct_view_blueprint(app, db):
         return twiml(twilio_services.respond_message(output))
 
     def _process_message(message, subscriber):
-        output = "Sorry, we don't recognize that command. Available commands are: 'subscribe' or 'unsubscribe'."
+        output = "Sorry, we don't recognize that command. Available commands are: 'add' or 'remove'."
 
         if message.startswith(SUBSCRIBE_COMMAND) or message.startswith(UNSUBSCRIBE_COMMAND):
             subscriber.subscribed = message.startswith(SUBSCRIBE_COMMAND)
@@ -60,7 +60,7 @@ def construct_view_blueprint(app, db):
             if subscriber.subscribed:
                 output = "You are now subscribed for updates."
             else:
-                output = "You have unsubscribed from notifications. Text 'subscribe' to start receiving updates again"
+                output = "You have unsubscribed from notifications. Text 'add' to start receiving updates again"
 
         return output
 
