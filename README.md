@@ -17,22 +17,26 @@ Use Twilio to create sms notifications to keep your subscribers in the loop.
 
    ![Configure Voice](http://howtodocs.s3.amazonaws.com/twilio-number-config-all-med.gif)
 
-   To start using `ngrok` in our project you'll have execute to the following line in the _command prompt_:
+   To start using `ngrok` in our project you'll have execute to the following line in the _command prompt_.
+
     ```
     ngrok http 8080 -host-header="localhost:8080"
     ```
 
-   Bear in mind that our endpoint is:
+   Keep in mind that our endpoint is:
+
     ```
     http://<your-ngrok-subdomain>.ngrok.io/message
     ```
 
-1. Clone this repository and `cd` into its directory:
+1. Clone this repository and `cd` into it.
+
     ```
     git clone git@github.com:TwilioDevEd/marketing-notifications-python.git
     ```
 
-1. Create a new virtual environment:
+1. Create a new virtual environment.
+
     - If using vanilla [virtualenv](https://virtualenv.pypa.io/en/latest/):
 
         ```
@@ -46,12 +50,13 @@ Use Twilio to create sms notifications to keep your subscribers in the loop.
         mkvirtualenv account-verification-flask
         ```
 
-1. Install the requirements using [pip](https://pip.pypa.io/en/stable/installing/):
+1. Install the requirements using [pip](https://pip.pypa.io/en/stable/installing/).
 
     ```
     pip install -r requirements.txt
     ```
-1. Edit the following keys/values for the `config.py` file inside the  `marketing-notifications-python/` directory. Be sure to replace the place holders and connection string with real information
+
+1. Edit the following keys/values for the `config.py` file inside the  `marketing-notifications-python/` directory. Be sure to replace the place holders and connection string with real information.
 
     ```
   SECRET_KEY = 'your_authy_secret_key'
@@ -63,24 +68,25 @@ Use Twilio to create sms notifications to keep your subscribers in the loop.
   SQLALCHEMY_DATABASE_URI = 'sqlite://'
     ```
 
-1. Run the migrations with:
+1. Run the migrations.
 
     ```
     python manage.py db upgrade
     ```
 
-1. Start the development server
+1. Start the development server.
 
     ```
     python manage.py runserver
     ```
-That's it
+
+That's it!
 
 ## Run the tests
 
 You can run the tests locally through [coverage](http://coverage.readthedocs.org/):
 
-1. Run the tests:
+1. Run the tests.
 
     ```
     $ coverage run test.py
