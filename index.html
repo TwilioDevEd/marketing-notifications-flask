@@ -13,15 +13,15 @@
 <p>Ready to implement SMS and MMS marketing notifications? Here&#39;s how it works
 at a high level:</p>
 <ol>
-<li>A user you&#39;d like to reach sends an SMS text message to a Twilio phone
-number you advertise in print, online, or in TV advertising.</li>
+<li>A possible customer sends an SMS to a Twilio phone number you advertise
+either online, on printed propaganda or on TV advertising.</li>
 <li>Your application confirms that the user wants to receive SMS and MMS
 notifications from your application.</li>
 <li>An administrator or marketing campaign manager uses a web form to craft a
 message that will go out to all subscribers via SMS/MMS message.</li>
 </ol>
 <h2 id="building-blocks">Building Blocks</h2>
-<p>To get this done, you&#39;ll be working with the following Twilio APIs:</p>
+<p>To get this done, you&#39;ll be working with the following tools:</p>
 <ul>
 <li><a href="//www.local.twilio.com/docs/api/twiml">TwiML</a> and the <a href="/docs/api/twiml/sms/message">&lt;Message&gt;
 Verb</a>: We&#39;ll use TwiML to manage interactions
@@ -48,15 +48,15 @@ active, only an active subscriber will receive notifications.</li>
 <ul>
 <li><a href="https://flask-migrate.readthedocs.org/en/latest/">Database Migrations in Flask</a></li>
 </ul>
-</div><div data-title="Handling Incoming Messages" data-file="marketing_notifications_python/views.py" data-highlight="38-52" class="step"><h2 id="handling-incoming-messages">Handling Incoming messages</h2>
+</div><div data-title="Handling Incoming Messages" data-file="marketing_notifications_python/views.py" data-highlight="39-65" class="step"><h2 id="handling-incoming-messages">Handling Incoming messages</h2>
 <p>This is the endpoint that will be called every time our application receives
 a message.</p>
-<p>We begin by getting the texter&#39;s phone number from the incoming <a href="/docs/api/twiml/sms/twilio_request">Twilio
-request</a>. Now, we need to find a
-<code>Subscriber</code> model with that phone number.</p>
-<p>If there&#39;s no subscriber with this phone number, we create one, save it, and
-respond with a message asking them to text &quot;add&quot; to confirm that
-they want to receive messages from us.</p>
+<p>It checks if the command sent in the message is one of the commands that we
+are expecting. Depending on that it returns a message formatted in TwiML.</p>
+<p>And that&#39;s all we want at this step! We&#39;ve created a <code>Subscriber</code> model to
+keep track of the people that have requested our messages. We also have saved
+their information on the database after receiving a text message with an &#39;add&#39;
+command.</p>
 <p><strong>See Also:</strong></p>
 <ul>
 <li><a href="//www.twilio.com/docs/quickstart/python/twiml">Twilio TwiML</a></li>
@@ -71,20 +71,17 @@ the created object passing it the desired text.</p>
 <li><a href="//www.twilio.com/docs/quickstart/python/sms/replying-to-sms-messages">Replying Twilio messages</a></li>
 </ul>
 </div><div data-title="Manage Subscriptions" data-file="marketing_notifications_python/views.py" data-highlight="54-65" class="step"><h2 id="manage-subscriptions">Manage Subscriptions</h2>
-<p>We want to provide the user with two SMS commands to manage their
-subscription status: <code>add</code> and <code>remove</code>.  These commands will
-toggle a boolean flag for their <code>Subscriber</code> record in the database, and
-will determine whether or not they receive messages from our marketing
-campaign. Because we&#39;re not jerks, we don&#39;t opt them in automatically -
-rather, we have them confirm that they want to receive messages from us
-first.</p>
-<p>To make this happen, we will need to update the controller logic which
-handles the incoming text message to do a couple things:</p>
+<p>  We want to provide the user with two SMS commands to manage their
+  subscription status: <code>add</code> and <code>remove</code>.  These commands will
+  toggle a boolean flag for their <code>Subscriber</code> record in the database and
+  will determine whether or not they want to receive messages from our
+  marketing campaign. We&#39;re not jerks, we don&#39;t opt them in automatically -
+  rather, we have them confirm that they want to receive our messages.</p>
+<p>  To make this happen, we will need to update the controller logic which
+  handles the incoming text message to do a couple things:</p>
 <ul>
-<li>If the texter is a person already in the database, parse the message
-they sent to see if it&#39;s a command we recognize.</li>
-<li>If it is a <code>add</code> or <code>remove</code> command, update their
-subscription status in the database.</li>
+<li>If it is a <code>add</code> or <code>remove</code> command, create/update their
+subscription with the right status in the database.</li>
 <li>If it is a command we don&#39;t recognize, send them a message explaining
 available commands.</li>
 </ul>
@@ -96,17 +93,13 @@ to send the message.</p>
 with a request custom <code>flash</code> attribute message containing feedback about
 the messaging attempt.</p>
 </div><div data-title="Send SMS or MMS Notifications" data-file="marketing_notifications_python/twilio/twilio_services.py" data-highlight="13-19" class="step"><h2 id="send-sms-or-mms-notifications">Send SMS or MMS Notifications</h2>
-<p>Now that we have a list of subscribers for our awesome SMS and MMS content,
-we need to provide our marketing team some kind of interface to send out
-messages.</p>
-<p>When the model object is loaded, it creates a <a href="https://github.com/twilio/twilio-python">Twilio REST API
-client</a> that it can use to send SMS and
-MMS messages. The client requires your Twilio account credentials (an
-account SID and auth token), which can be found <a href="/user/account">in the account
-portal</a>.</p>
-<p>Next all we need to do is call <code>messages.create</code> on the client object in
-order to send our message. The Twilio Message API call requires a &#39;From&#39; and
-&#39;To&#39; parameter, and either a &#39;Body&#39; or a &#39;MediaUrl&#39; attribute (or both).</p>
+<p>In the method <code>send_message</code> we create a [Twilio REST API
+client]that can be used to send SMS and MMS messages. The client requires your
+Twilio account credentials (an account SID and auth token), which can be
+found <a href="/user/account">in the account portal</a>.</p>
+<p>Next all we need to do is call <code>create</code> on the <code>client.account.messages</code>
+object in order to send our message. The Twilio Message API call requires
+a &#39;from&#39;, <code>to</code> and a <code>body</code> parameters-- the &#39;media_url&#39; is optional.</p>
 </div><div data-title="Where to Next?" class="step"><h2 id="where-to-next-">Where to Next?</h2>
 <p>That&#39;s it! We&#39;ve just implemented a an opt-in process and an administrative
 interface to run an SMS and MMS marketing campaign. Now all you need is
@@ -118,6 +111,7 @@ other tutorials:</p>
 upcoming appointment.</p>
 <p><a href="//www.twilio.com/docs/tutorials/walkthrough/click-to-call/python/flask"><strong>Click To Call</strong></a></p>
 <p>Convert your company web traffic into phone calls with the click of a button.</p>
+<h3 id="did-this-help-">Did this help?</h3>
 <p>Thanks for checking out this tutorial! If you have any feedback
 to share with us, we&#39;d love to hear it.
 <a href="mailto:deved-oss@twilio.com">Contact the Twilio Developer Education Team</a> to let us know what you think.</p>
