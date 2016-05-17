@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/TwilioDevEd/marketing-notifications-flask.svg?branch=master)](https://travis-ci.org/TwilioDevEd/marketing-notifications-flask)
 
-Use Twilio to create sms notifications to keep your subscribers in the loop.
+Use Twilio to create SMS notifications to keep your subscribers in the loop.
 
 [Read the full tutorial here](https://www.twilio.com/docs/tutorials/walkthrough/marketing-notifications/python/flask)!
 
@@ -10,13 +10,21 @@ Use Twilio to create sms notifications to keep your subscribers in the loop.
 
 1. You will need to configure Twilio to send requests to your application when SMS are received.
 
-   You will need to provision at least one Twilio number with sms capabilities so the application's users can make property reservations. You can buy a number [right here](https://www.twilio.com/user/account/phone-numbers/search). Once you have a number you need to configure your number to work with your application. Open [the number management page](https://www.twilio.com/user/account/phone-numbers/incoming) and open a number's configuration by clicking on it.
+   You will need to provision at least one Twilio number with SMS capabilities
+   so the application's users can make property reservations. You can buy a
+   number [right here](https://www.twilio.com/user/account/phone-numbers/search).
+   Once you have a number you need to configure your number to work with your
+   application.
+   Open [the number management page](https://www.twilio.com/user/account/phone-numbers/incoming)
+   and open a number's configuration by clicking on it.
 
-   Remember that the number where you change the _SMS webhook_ must be the same one you set on the `TwilioPhoneNumber` setting.
+   Remember that the number where you change the _SMS webhook_ must be the same one you set on the
+   `TwilioPhoneNumber` setting.
 
    ![Configure Voice](http://howtodocs.s3.amazonaws.com/twilio-number-config-all-med.gif)
 
-   To start using `ngrok` in our project you'll have execute to the following line in the _command prompt_.
+   To start using `ngrok` in our project you'll have execute to the following
+   line in the _command prompt_.
 
     ```
     ngrok http 8080 -host-header="localhost:8080"
