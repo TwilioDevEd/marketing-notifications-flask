@@ -13,15 +13,15 @@
 <p>Ready to implement SMS and MMS marketing notifications? Here&#39;s how it works
 at a high level:</p>
 <ol>
-<li>A user you&#39;d like to reach sends an SMS text message to a Twilio phone
-number you advertise in print, online, or in TV advertising.</li>
+<li>A possible customer sends an SMS to a Twilio phone number you advertise
+either online, on printed propaganda or on TV advertising.</li>
 <li>Your application confirms that the user wants to receive SMS and MMS
 notifications from your application.</li>
 <li>An administrator or marketing campaign manager uses a web form to craft a
 message that will go out to all subscribers via SMS/MMS message.</li>
 </ol>
 <h2 id="building-blocks">Building Blocks</h2>
-<p>To get this done, you&#39;ll be working with the following Twilio APIs:</p>
+<p>To get this done, you&#39;ll be working with the following tools:</p>
 <ul>
 <li><a href="//www.local.twilio.com/docs/api/twiml">TwiML</a> and the <a href="/docs/api/twiml/sms/message">&lt;Message&gt;
 Verb</a>: We&#39;ll use TwiML to manage interactions
@@ -48,15 +48,15 @@ active, only an active subscriber will receive notifications.</li>
 <ul>
 <li><a href="https://flask-migrate.readthedocs.org/en/latest/">Database Migrations in Flask</a></li>
 </ul>
-</div><div data-title="Handling Incoming Messages" data-file="marketing_notifications_python/views.py" data-highlight="38-52" class="step"><h2 id="handling-incoming-messages">Handling Incoming messages</h2>
+</div><div data-title="Handling Incoming Messages" data-file="marketing_notifications_python/views.py" data-highlight="39-65" class="step"><h2 id="handling-incoming-messages">Handling Incoming messages</h2>
 <p>This is the endpoint that will be called every time our application receives
 a message.</p>
-<p>We begin by getting the texter&#39;s phone number from the incoming <a href="/docs/api/twiml/sms/twilio_request">Twilio
-request</a>. Now, we need to find a
-<code>Subscriber</code> model with that phone number.</p>
-<p>If there&#39;s no subscriber with this phone number, we create one, save it, and
-respond with a message asking them to text &quot;add&quot; to confirm that
-they want to receive messages from us.</p>
+<p>It checks if the command sent in the message is one of the commands that we
+are expecting. Depending on that it returns a message formatted in TwiML.</p>
+<p>And that&#39;s all we want at this step! We&#39;ve created a <code>Subscriber</code> model to
+keep track of the people that have requested our messages. We also have saved
+their information on the database after receiving a text message with an &#39;add&#39;
+command.</p>
 <p><strong>See Also:</strong></p>
 <ul>
 <li><a href="//www.twilio.com/docs/quickstart/python/twiml">Twilio TwiML</a></li>
@@ -71,20 +71,17 @@ the created object passing it the desired text.</p>
 <li><a href="//www.twilio.com/docs/quickstart/python/sms/replying-to-sms-messages">Replying Twilio messages</a></li>
 </ul>
 </div><div data-title="Manage Subscriptions" data-file="marketing_notifications_python/views.py" data-highlight="54-65" class="step"><h2 id="manage-subscriptions">Manage Subscriptions</h2>
-<p>We want to provide the user with two SMS commands to manage their
-subscription status: <code>add</code> and <code>remove</code>.  These commands will
-toggle a boolean flag for their <code>Subscriber</code> record in the database, and
-will determine whether or not they receive messages from our marketing
-campaign. Because we&#39;re not jerks, we don&#39;t opt them in automatically -
-rather, we have them confirm that they want to receive messages from us
-first.</p>
-<p>To make this happen, we will need to update the controller logic which
-handles the incoming text message to do a couple things:</p>
+<p>  We want to provide the user with two SMS commands to manage their
+  subscription status: <code>add</code> and <code>remove</code>.  These commands will
+  toggle a boolean flag for their <code>Subscriber</code> record in the database and
+  will determine whether or not they want to receive messages from our
+  marketing campaign. We&#39;re not jerks, we don&#39;t opt them in automatically -
+  rather, we have them confirm that they want to receive our messages.</p>
+<p>  To make this happen, we will need to update the controller logic which
+  handles the incoming text message to do a couple things:</p>
 <ul>
-<li>If the texter is a person already in the database, parse the message
-they sent to see if it&#39;s a command we recognize.</li>
-<li>If it is a <code>add</code> or <code>remove</code> command, update their
-subscription status in the database.</li>
+<li>If it is a <code>add</code> or <code>remove</code> command, create/update their
+subscription with the right status in the database.</li>
 <li>If it is a command we don&#39;t recognize, send them a message explaining
 available commands.</li>
 </ul>
@@ -96,17 +93,13 @@ to send the message.</p>
 with a request custom <code>flash</code> attribute message containing feedback about
 the messaging attempt.</p>
 </div><div data-title="Send SMS or MMS Notifications" data-file="marketing_notifications_python/twilio/twilio_services.py" data-highlight="13-19" class="step"><h2 id="send-sms-or-mms-notifications">Send SMS or MMS Notifications</h2>
-<p>Now that we have a list of subscribers for our awesome SMS and MMS content,
-we need to provide our marketing team some kind of interface to send out
-messages.</p>
-<p>When the model object is loaded, it creates a <a href="https://github.com/twilio/twilio-python">Twilio REST API
-client</a> that it can use to send SMS and
-MMS messages. The client requires your Twilio account credentials (an
-account SID and auth token), which can be found <a href="/user/account">in the account
-portal</a>.</p>
-<p>Next all we need to do is call <code>messages.create</code> on the client object in
-order to send our message. The Twilio Message API call requires a &#39;From&#39; and
-&#39;To&#39; parameter, and either a &#39;Body&#39; or a &#39;MediaUrl&#39; attribute (or both).</p>
+<p>In the method <code>send_message</code> we create a [Twilio REST API
+client]that can be used to send SMS and MMS messages. The client requires your
+Twilio account credentials (an account SID and auth token), which can be
+found <a href="/user/account">in the account portal</a>.</p>
+<p>Next all we need to do is call <code>create</code> on the <code>client.account.messages</code>
+object in order to send our message. The Twilio Message API call requires
+a &#39;from&#39;, <code>to</code> and a <code>body</code> parameters-- the &#39;media_url&#39; is optional.</p>
 </div><div data-title="Where to Next?" class="step"><h2 id="where-to-next-">Where to Next?</h2>
 <p>That&#39;s it! We&#39;ve just implemented a an opt-in process and an administrative
 interface to run an SMS and MMS marketing campaign. Now all you need is
@@ -119,13 +112,13 @@ upcoming appointment.</p>
 <p><a href="//www.twilio.com/docs/tutorials/walkthrough/click-to-call/python/flask"><strong>Click To Call</strong></a></p>
 <p>Convert your company web traffic into phone calls with the click of a button.</p>
 <h3 id="did-this-help-">Did this help?</h3>
-<p>Thanks for checking out this tutorial! If you have any feedback to share
-with us, we&#39;d love to hear it. Tweet
-<a href="http://twitter.com/twilio">@twilio</a> to let us know what you think.</p>
+<p>Thanks for checking out this tutorial! If you have any feedback
+to share with us, we&#39;d love to hear it.
+<a href="mailto:deved-oss@twilio.com">Contact the Twilio Developer Education Team</a> to let us know what you think.</p>
 </div>
 <div class="saurus-files" style="display:none;"><textarea class="saurus-file" data-file="marketing_notifications_python/bootstrap.py" data-mode="python">ZnJvbSBmbGFzay5leHQuc3FsYWxjaGVteSBpbXBvcnQgU1FMQWxjaGVteQoKZnJvbSBmbGFzayBpbXBvcnQgRmxhc2sKZnJvbSBtYXJrZXRpbmdfbm90aWZpY2F0aW9uc19weXRob24gaW1wb3J0IGdldF9lbnYKZnJvbSBtYXJrZXRpbmdfbm90aWZpY2F0aW9uc19weXRob24uY29uZmlnIGltcG9ydCBjb25maWdfZW52X2ZpbGVzCmZyb20gbWFya2V0aW5nX25vdGlmaWNhdGlvbnNfcHl0aG9uLmRhdGFiYXNlIGltcG9ydCBzZXRfZGIKZnJvbSBtYXJrZXRpbmdfbm90aWZpY2F0aW9uc19weXRob24udmlld3MgaW1wb3J0IGNvbnN0cnVjdF92aWV3X2JsdWVwcmludAoKYXBwcyA9IHsKICAgICd0ZXN0JzogTm9uZSwKICAgICdkZXZlbG9wbWVudCc6IE5vbmUsCn0KCgpkZWYgZ2V0X2FwcChjb25maWdfbmFtZT1Ob25lKToKICAgIGlmIGNvbmZpZ19uYW1lIGlzIE5vbmU6CiAgICAgICAgY29uZmlnX25hbWUgPSBnZXRfZW52KCkKCiAgICBpZiBhcHBzW2NvbmZpZ19uYW1lXSBpcyBOb25lOgogICAgICAgIGFwcHNbY29uZmlnX25hbWVdID0gaW5pdF9hcHAoY29uZmlnX25hbWUpCiAgICByZXR1cm4gYXBwc1tjb25maWdfbmFtZV0KCgpkZWYgaW5pdF9hcHAoY29uZmlnX25hbWUpOgogICAgZmxhc2tfYXBwID0gRmxhc2soX19uYW1lX18pCiAgICBfY29uZmlndXJlX2FwcChmbGFza19hcHAsIGNvbmZpZ19uYW1lKQogICAgcmV0dXJuIGZsYXNrX2FwcAoKCmRlZiBfY29uZmlndXJlX2FwcChmbGFza19hcHAsIGNvbmZpZ19uYW1lKToKICAgIGZsYXNrX2FwcC5jb25maWcuZnJvbV9vYmplY3QoY29uZmlnX2Vudl9maWxlc1tjb25maWdfbmFtZV0pCiAgICBhcHBfZGIgPSBTUUxBbGNoZW15KGZsYXNrX2FwcCkKICAgIHNldF9kYihhcHBfZGIsIGNvbmZpZ19uYW1lKQogICAgZmxhc2tfYXBwLnJlZ2lzdGVyX2JsdWVwcmludChjb25zdHJ1Y3Rfdmlld19ibHVlcHJpbnQoZmxhc2tfYXBwLCBhcHBfZGIpKQo=</textarea>
 <textarea class="saurus-file" data-file="marketing_notifications_python/models/subscriber.py" data-mode="python">ZnJvbSBtYXJrZXRpbmdfbm90aWZpY2F0aW9uc19weXRob24ubW9kZWxzIGltcG9ydCBhcHBfZGIKCmRiID0gYXBwX2RiKCkKCgpjbGFzcyBTdWJzY3JpYmVyKGRiLk1vZGVsKToKICAgIF9fdGFibGVuYW1lX18gPSAic3Vic2NyaWJlcnMiCgogICAgaWQgPSBkYi5Db2x1bW4oZGIuSW50ZWdlciwgcHJpbWFyeV9rZXk9VHJ1ZSkKICAgIHBob25lX251bWJlciA9IGRiLkNvbHVtbihkYi5TdHJpbmcsIG51bGxhYmxlPUZhbHNlKQogICAgc3Vic2NyaWJlZCA9IGRiLkNvbHVtbihkYi5Cb29sZWFuLCBudWxsYWJsZT1GYWxzZSwgZGVmYXVsdD1UcnVlKQoKICAgIGRlZiBfX3JlcHJfXyhzZWxmKToKICAgICAgICByZXR1cm4gJzxTdWJzY3JpYmVyICVyICVyPicgJSBzZWxmLnBob25lX251bWJlciwgc2VsZi5zdWJzY3JpYmVkCg==</textarea>
 <textarea class="saurus-file" data-file="marketing_notifications_python/views.py" data-mode="python">ZnJvbSBmbGFzayBpbXBvcnQgcmVxdWVzdCwgZmxhc2gKZnJvbSBtYXJrZXRpbmdfbm90aWZpY2F0aW9uc19weXRob24uZm9ybXMgaW1wb3J0IFNlbmRNZXNzYWdlRm9ybQpmcm9tIG1hcmtldGluZ19ub3RpZmljYXRpb25zX3B5dGhvbi5tb2RlbHMgaW1wb3J0IGluaXRfbW9kZWxzX21vZHVsZQpmcm9tIG1hcmtldGluZ19ub3RpZmljYXRpb25zX3B5dGhvbi50d2lsaW8gaW1wb3J0IGluaXRfdHdpbGlvX21vZHVsZQpmcm9tIG1hcmtldGluZ19ub3RpZmljYXRpb25zX3B5dGhvbi52aWV3X2hlbHBlcnMgaW1wb3J0IHR3aW1sLCB2aWV3CmZyb20gZmxhc2sgaW1wb3J0IEJsdWVwcmludApmcm9tIG1hcmtldGluZ19ub3RpZmljYXRpb25zX3B5dGhvbi50d2lsaW8udHdpbGlvX3NlcnZpY2VzIGltcG9ydCBUd2lsaW9TZXJ2aWNlcwoKCmRlZiBjb25zdHJ1Y3Rfdmlld19ibHVlcHJpbnQoYXBwLCBkYik6CiAgICBTVUJTQ1JJQkVfQ09NTUFORCA9ICJhZGQiCiAgICBVTlNVQlNDUklCRV9DT01NQU5EID0gInJlbW92ZSIKCiAgICB2aWV3cyA9IEJsdWVwcmludCgidmlld3MiLCBfX25hbWVfXykKCiAgICBpbml0X3R3aWxpb19tb2R1bGUoYXBwKQogICAgaW5pdF9tb2RlbHNfbW9kdWxlKGRiKQogICAgZnJvbSBtYXJrZXRpbmdfbm90aWZpY2F0aW9uc19weXRob24ubW9kZWxzLnN1YnNjcmliZXIgaW1wb3J0IFN1YnNjcmliZXIKCiAgICBAdmlld3Mucm91dGUoJy8nLCBtZXRob2RzPVsiR0VUIiwgIlBPU1QiXSkKICAgIEB2aWV3cy5yb3V0ZSgnL25vdGlmaWNhdGlvbnMnLCBtZXRob2RzPVsiR0VUIiwgIlBPU1QiXSkKICAgIGRlZiBub3RpZmljYXRpb25zKCk6CiAgICAgICAgZm9ybSA9IFNlbmRNZXNzYWdlRm9ybSgpCiAgICAgICAgaWYgcmVxdWVzdC5tZXRob2QgPT0gJ1BPU1QnIGFuZCBmb3JtLnZhbGlkYXRlX29uX3N1Ym1pdCgpOgogICAgICAgICAgICBzdWJzY3JpYmVycyA9IFN1YnNjcmliZXIucXVlcnkuZmlsdGVyKFN1YnNjcmliZXIuc3Vic2NyaWJlZCkuYWxsKCkKICAgICAgICAgICAgaWYgbGVuKHN1YnNjcmliZXJzKSA+IDA6CiAgICAgICAgICAgICAgICBmbGFzaCgnTWVzc2FnZXMgb24gdGhlaXIgd2F5IScpCiAgICAgICAgICAgICAgICB0d2lsaW9fc2VydmljZXMgPSBUd2lsaW9TZXJ2aWNlcygpCiAgICAgICAgICAgICAgICBmb3IgcyBpbiBzdWJzY3JpYmVyczoKICAgICAgICAgICAgICAgICAgICB0d2lsaW9fc2VydmljZXMuc2VuZF9tZXNzYWdlKHMucGhvbmVfbnVtYmVyLCBmb3JtLm1lc3NhZ2UuZGF0YSwgZm9ybS5pbWFnZVVybC5kYXRhKQogICAgICAgICAgICBlbHNlOgogICAgICAgICAgICAgICAgZmxhc2goJ05vIHN1YnNjcmliZXJzIGZvdW5kIScpCgogICAgICAgICAgICBmb3JtLnJlc2V0KCkKICAgICAgICAgICAgcmV0dXJuIHZpZXcoJ25vdGlmaWNhdGlvbnMnLCBmb3JtKQoKICAgICAgICByZXR1cm4gdmlldygnbm90aWZpY2F0aW9ucycsIGZvcm0pCgogICAgQHZpZXdzLnJvdXRlKCcvbWVzc2FnZScsIG1ldGhvZHM9WyJQT1NUIl0pCiAgICBkZWYgbWVzc2FnZSgpOgogICAgICAgIHN1YnNjcmliZXIgPSBTdWJzY3JpYmVyLnF1ZXJ5LmZpbHRlcihTdWJzY3JpYmVyLnBob25lX251bWJlciA9PSByZXF1ZXN0LmZvcm1bJ0Zyb20nXSkuZmlyc3QoKQogICAgICAgIGlmIHN1YnNjcmliZXIgaXMgTm9uZToKICAgICAgICAgICAgc3Vic2NyaWJlciA9IFN1YnNjcmliZXIocGhvbmVfbnVtYmVyPXJlcXVlc3QuZm9ybVsnRnJvbSddKQogICAgICAgICAgICBkYi5zZXNzaW9uLmFkZChzdWJzY3JpYmVyKQogICAgICAgICAgICBkYi5zZXNzaW9uLmNvbW1pdCgpCiAgICAgICAgICAgIG91dHB1dCA9ICJUaGFua3MgZm9yIGNvbnRhY3RpbmcgVFdCQyEgVGV4dCAnYWRkJyBpZiB5b3Ugd291bGQgbGlrZSB0byByZWNlaXZlIHVwZGF0ZXMgdmlhIHRleHQgbWVzc2FnZS4iCiAgICAgICAgZWxzZToKICAgICAgICAgICAgb3V0cHV0ID0gX3Byb2Nlc3NfbWVzc2FnZShyZXF1ZXN0LmZvcm1bJ0JvZHknXSwgc3Vic2NyaWJlcikKICAgICAgICAgICAgZGIuc2Vzc2lvbi5jb21taXQoKQoKICAgICAgICB0d2lsaW9fc2VydmljZXMgPSBUd2lsaW9TZXJ2aWNlcygpCiAgICAgICAgcmV0dXJuIHR3aW1sKHR3aWxpb19zZXJ2aWNlcy5yZXNwb25kX21lc3NhZ2Uob3V0cHV0KSkKCiAgICBkZWYgX3Byb2Nlc3NfbWVzc2FnZShtZXNzYWdlLCBzdWJzY3JpYmVyKToKICAgICAgICBvdXRwdXQgPSAiU29ycnksIHdlIGRvbid0IHJlY29nbml6ZSB0aGF0IGNvbW1hbmQuIEF2YWlsYWJsZSBjb21tYW5kcyBhcmU6ICdhZGQnIG9yICdyZW1vdmUnLiIKCiAgICAgICAgaWYgbWVzc2FnZS5zdGFydHN3aXRoKFNVQlNDUklCRV9DT01NQU5EKSBvciBtZXNzYWdlLnN0YXJ0c3dpdGgoVU5TVUJTQ1JJQkVfQ09NTUFORCk6CiAgICAgICAgICAgIHN1YnNjcmliZXIuc3Vic2NyaWJlZCA9IG1lc3NhZ2Uuc3RhcnRzd2l0aChTVUJTQ1JJQkVfQ09NTUFORCkKCiAgICAgICAgICAgIGlmIHN1YnNjcmliZXIuc3Vic2NyaWJlZDoKICAgICAgICAgICAgICAgIG91dHB1dCA9ICJZb3UgYXJlIG5vdyBzdWJzY3JpYmVkIGZvciB1cGRhdGVzLiIKICAgICAgICAgICAgZWxzZToKICAgICAgICAgICAgICAgIG91dHB1dCA9ICJZb3UgaGF2ZSB1bnN1YnNjcmliZWQgZnJvbSBub3RpZmljYXRpb25zLiBUZXh0ICdhZGQnIHRvIHN0YXJ0IHJlY2VpdmluZyB1cGRhdGVzIGFnYWluIgoKICAgICAgICByZXR1cm4gb3V0cHV0CgogICAgcmV0dXJuIHZpZXdzCg==</textarea>
 <textarea class="saurus-file" data-file="marketing_notifications_python/twilio/twilio_services.py" data-mode="python">ZnJvbSBtYXJrZXRpbmdfbm90aWZpY2F0aW9uc19weXRob24udHdpbGlvIGltcG9ydCBhY2NvdW50X3NpZCwgYXV0aF90b2tlbiwgcGhvbmVfbnVtYmVyCmZyb20gdHdpbGlvIGltcG9ydCB0d2ltbApmcm9tIHR3aWxpby5yZXN0IGltcG9ydCBUd2lsaW9SZXN0Q2xpZW50CgoKY2xhc3MgVHdpbGlvU2VydmljZXM6CiAgICB0d2lsaW9fY2xpZW50ID0gTm9uZQoKICAgIGRlZiBfX2luaXRfXyhzZWxmKToKICAgICAgICBpZiBUd2lsaW9TZXJ2aWNlcy50d2lsaW9fY2xpZW50IGlzIE5vbmU6CiAgICAgICAgICAgIFR3aWxpb1NlcnZpY2VzLnR3aWxpb19jbGllbnQgPSBUd2lsaW9SZXN0Q2xpZW50KGFjY291bnRfc2lkKCksIGF1dGhfdG9rZW4oKSkKCiAgICBkZWYgc2VuZF9tZXNzYWdlKHNlbGYsIHRvLCBtZXNzYWdlLCBpbWFnZV91cmwpOgogICAgICAgIFR3aWxpb1NlcnZpY2VzLnR3aWxpb19jbGllbnQubWVzc2FnZXMuY3JlYXRlKAogICAgICAgICAgICB0bz10bywKICAgICAgICAgICAgZnJvbV89cGhvbmVfbnVtYmVyKCksCiAgICAgICAgICAgIGJvZHk9bWVzc2FnZSwKICAgICAgICAgICAgbWVkaWFfdXJsPWltYWdlX3VybAogICAgICAgICkKCiAgICBkZWYgcmVzcG9uZF9tZXNzYWdlKHNlbGYsIG1lc3NhZ2UpOgogICAgICAgIHJlc3BvbnNlID0gdHdpbWwuUmVzcG9uc2UoKQogICAgICAgIHJlc3BvbnNlLm1lc3NhZ2UobWVzc2FnZSkKICAgICAgICByZXR1cm4gcmVzcG9uc2UK</textarea>
 </div>
-</div><div class="saurus-overview"><ul></ul></div></div><div class="saurus-code"><div class="file-path"><span class="crumb-container"></span><i class="fa fa-fw fa-folder"></i></div><div class="saurus-editor"></div></div><div class="saurus-explorer"><div class="saurus-file-list"></div><a href="https://github.com/TwilioDevEd/marketing-notifications-python" target="_blank" class="explorer-get-code"> <i class="fa fa-lg fa-github-square"> </i>View Code on GitHub</a></div></div></div></div><script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script><script src="ace/ace.js"></script><script src="ace/theme-monokai.js"></script><script src="viewsaurus.js"></script></body></html>
+</div><div class="saurus-overview"><ul></ul></div></div><div class="saurus-code"><div class="file-path"><span class="crumb-container"></span><i class="fa fa-fw fa-folder"></i></div><div class="saurus-editor"></div></div><div class="saurus-explorer"><div class="saurus-file-list"></div><a href="https://github.com/TwilioDevEd/marketing-notifications-flask" target="_blank" class="explorer-get-code"> <i class="fa fa-lg fa-github-square"> </i>View Code on GitHub</a></div></div></div></div><script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script><script src="ace/ace.js"></script><script src="ace/theme-monokai.js"></script><script src="viewsaurus.js"></script></body></html>
