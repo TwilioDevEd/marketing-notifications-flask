@@ -7,9 +7,11 @@
     at a high level:
 
     1. A possible customer sends an SMS to a Twilio phone number you advertise
-       either online, on printed propaganda or on TV advertising.
+       online, on TV or in print.
+
     2. Your application confirms that the user wants to receive SMS and MMS
        notifications from your application.
+
     3. An administrator or marketing campaign manager uses a web form to craft a
        message that will go out to all subscribers via SMS/MMS message.
 
@@ -20,6 +22,7 @@
     * [TwiML](//www.local.twilio.com/docs/api/twiml) and the [<Message>
     Verb](/docs/api/twiml/sms/message): We'll use TwiML to manage interactions
     initiated by the user via SMS.
+
     * [Messages Resource](/docs/api/rest/sending-sms): We will use the REST API
     to broadcast messages out to all subscribers.
 
@@ -38,10 +41,11 @@
     In order to send out marketing notifications to a subscriber, we need to
     provide the right model.
 
-    * The `phone_number` will allow the application to know where to send the
+    * The `phone_number` allows the application to know where to send the
     notifications.
-    * `subscribed` let the application to identify which subscribers are
-    active, only an active subscriber will receive notifications.
+
+    * `subscribed` lets the application identify which subscribers are
+    active, only an active subscribers will receive notifications.
 
     **See Also**
     * [Database Migrations in Flask](https://flask-migrate.readthedocs.org/en/latest/)
@@ -75,9 +79,9 @@
   :markdown
     ## Replying received messages
 
-    Once we had received the Twilio request with the texter information and
+    Once we had received the Twilio request with the user's information and
     registered the number successfully, we can ask Twilio to reply with an SMS
-    text message, by creating a `twiml.Response` and calling `message` method on
+    by creating a `twiml.Response` and calling `message` method on
     the created object passing it the desired text.
 
     **See Also:**
@@ -94,16 +98,18 @@
       subscription status: `add` and `remove`.  These commands will
       toggle a boolean flag for their `Subscriber` record in the database and
       will determine whether or not they want to receive messages from our
-      marketing campaign. We're not jerks, we don't opt them in automatically -
-      rather, we have them confirm that they want to receive our messages.
+      marketing campaign. To respect our user's desires, we don't opt them in
+      automatically - rather, they have to confirm that they want to receive
+      our messages.
 
       To make this happen, we will need to update the controller logic which
       handles the incoming text message to do a couple things:
 
       * If it is a `add` or `remove` command, create/update their
       subscription with the right status in the database.
+
       * If it is a command we don't recognize, send them a message explaining
-      available commands.
+      the available commands.
 
 .step(
   data-title='Sending Notifications',
@@ -129,7 +135,7 @@
     ## Send SMS or MMS Notifications
 
     In the method `send_message` we create a [Twilio REST API
-    client]that can be used to send SMS and MMS messages. The client requires your
+    client] that can be used to send SMS and MMS messages. The client requires your
     Twilio account credentials (an account SID and auth token), which can be
     found [in the account portal](/user/account).
 
@@ -159,6 +165,6 @@
 
     ### Did this help?
 
-    Thanks for checking out this tutorial! If you have any feedback
-    to share with us, we'd love to hear it.
+    Thanks for checking this tutorial out! If you have any feedback to share
+    with us, we'd love to hear it.
     [Contact the Twilio Developer Education Team](mailto:deved-oss@twilio.com) to let us know what you think.
