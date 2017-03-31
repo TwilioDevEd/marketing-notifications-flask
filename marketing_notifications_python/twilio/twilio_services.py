@@ -1,5 +1,5 @@
 from marketing_notifications_python.twilio import account_sid, auth_token, phone_number
-from twilio import twiml
+from twilio.twiml.messaging_response import MessagingResponse
 from twilio.rest import Client
 
 
@@ -19,6 +19,6 @@ class TwilioServices:
         )
 
     def respond_message(self, message):
-        response = twiml.Response()
+        response = MessagingResponse()
         response.message(message)
         return response

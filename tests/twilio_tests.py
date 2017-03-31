@@ -16,7 +16,7 @@ class TwilioServicesTests(BaseTestCase):
         twiml = ElementTree.fromstring(response)
 
         # assert
-        assert twiml.findall("./Message/Body")[0].text == message
+        assert twiml.findall("./Message")[0].text == message
 
 
 if __name__ == '__main__':
