@@ -1,6 +1,6 @@
 from marketing_notifications_python.twilio import account_sid, auth_token, phone_number
-from twilio import twiml
-from twilio.rest import TwilioRestClient
+from twilio.twiml.messaging_response import MessagingResponse
+from twilio.rest import Client
 
 
 class TwilioServices:
@@ -8,10 +8,10 @@ class TwilioServices:
 
     def __init__(self):
         if TwilioServices.twilio_client is None:
-            TwilioServices.twilio_client = TwilioRestClient(account_sid(), auth_token())
+            self.twilio_client = Client(account_sid(), auth_token())
 
     def send_message(self, to, message, image_url):
-        TwilioServices.twilio_client.messages.create(
+        self.twilio_client.messages.create(
             to=to,
             from_=phone_number(),
             body=message,
@@ -19,6 +19,6 @@ class TwilioServices:
         )
 
     def respond_message(self, message):
-        response = twiml.Response()
+        response = MessagingResponse()
         response.message(message)
         return response
