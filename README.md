@@ -65,7 +65,7 @@ Use Twilio to create SMS notifications to keep your subscribers in the loop.
 
 1. Edit the following keys/values for the `config.py` file inside the  `marketing-notifications-python/` directory. Be sure to replace the place holders and connection string with real information.
 
-    ```
+  ```
   SECRET_KEY = 'your_authy_secret_key'
 
   TWILIO_ACCOUNT_SID = '[your_twilio_account_sid]'
@@ -73,7 +73,7 @@ Use Twilio to create SMS notifications to keep your subscribers in the loop.
   TWILIO_NUMBER = '[your_twilio_phone_number]'
 
   SQLALCHEMY_DATABASE_URI = 'sqlite://'
-    ```
+  ```
 
 1. Run the migrations.
 
