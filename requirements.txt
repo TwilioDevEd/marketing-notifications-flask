@@ -21,7 +21,7 @@ Manager==2.0.5
 MarkupSafe==0.23
 migrate==0.3.7
 Oncilla==0.1.0
-Pygments==2.0.2
+Pygments==2.7.3
 PyJWT==1.4.0
 python-editor==0.5
 pytz==2015.7
