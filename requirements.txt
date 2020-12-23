@@ -22,7 +22,7 @@ MarkupSafe==0.23
 migrate==0.3.7
 Oncilla==0.1.0
 Pygments==2.0.2
-PyJWT==1.4.0
+PyJWT==2.0.0
 python-editor==0.5
 pytz==2015.7
 six==1.10.0
