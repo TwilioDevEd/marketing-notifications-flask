@@ -1,5 +1,5 @@
-from marketing_notifications_python.forms import SendMessageForm
-from tests.base import BaseTestCase
+from notifications.forms import SendMessageForm
+from .base import BaseTestCase
 
 
 class FormTests(BaseTestCase):
@@ -9,8 +9,8 @@ class FormTests(BaseTestCase):
         form = SendMessageForm(message='', imageUrl='')
 
         # assert
-        assert form.validate() is False
-        assert 'Message is required' in form.message.errors
+        self.assertFalse(form.validate())
+        self.assertIn('Message is required', form.message.errors)
 
     # Ensures populate SenMessageForm with missing imageUrl filed give an error
     def test_populate_SendMessageForm_with_missing_imageUrl_should_produce_error(self):
@@ -18,5 +18,5 @@ class FormTests(BaseTestCase):
         form = SendMessageForm(message='Test', imageUrl='')
 
         # assert
-        assert form.validate() is False
-        assert 'Image URL is required' in form.imageUrl.errors
+        self.assertFalse(form.validate())
+        self.assertIn('Image URL is required', form.imageUrl.errors)

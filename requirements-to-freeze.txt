@@ -1,0 +1,11 @@
+python-dotenv
+Flask
+Flask-Migrate
+Flask-SQLAlchemy
+Flask-WTF
+
+twilio
+
+# development
+black
+flake8
