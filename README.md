@@ -1,6 +1,6 @@
 # SMS Notifications with Twilio and Python | Flask
 
-[![Build Status](https://travis-ci.org/TwilioDevEd/marketing-notifications-flask.svg?branch=master)](https://travis-ci.org/TwilioDevEd/marketing-notifications-flask)
+[![Build Status](https://github.com/TwilioDevEd/marketing-notifications-flask/workflows/Flask/badge.svg)](https://github.com/TwilioDevEd/marketing-notifications-flask/actions?query=workflow%3AFlask)
 
 Use Twilio to create SMS notifications to keep your subscribers in the loop.
 
@@ -42,49 +42,47 @@ Use Twilio to create SMS notifications to keep your subscribers in the loop.
     git clone git@github.com:TwilioDevEd/marketing-notifications-python.git
     ```
 
-1. Create a new virtual environment.
+1. Create and activate a new python3 virtual environment.
 
-    - If using vanilla [virtualenv](https://virtualenv.pypa.io/en/latest/):
-
-        ```
-        virtualenv venv
-        source venv/bin/activate
-        ```
-
-    - If using [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/):
-
-        ```
-        mkvirtualenv account-verification-flask
-        ```
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
 
 1. Install the requirements using [pip](https://pip.pypa.io/en/stable/installing/).
 
-    ```
+    ```bash
     pip install -r requirements.txt
     ```
 
-1. Edit the following keys/values for the `config.py` file inside the  `marketing-notifications-python/` directory. Be sure to replace the place holders and connection string with real information.
+1. Copy the `.env.example` file to `.env` and add the following values. Be sure to replace the placeholders and connection string with real information.
 
-    ```
-    SECRET_KEY = 'your_authy_secret_key'
+   ```
+   SECRET_KEY = 'your_authy_secret_key'
+   
+   TWILIO_ACCOUNT_SID = '[your_twilio_account_sid]'
+   TWILIO_AUTH_TOKEN = '[your_twilio_auth_token]'
+   TWILIO_NUMBER = '[your_twilio_phone_number]'
+   
+   SQLALCHEMY_DATABASE_URI = 'sqlite://'
+   ```
 
-    TWILIO_ACCOUNT_SID = '[your_twilio_account_sid]'
-    TWILIO_AUTH_TOKEN = '[your_twilio_auth_token]'
-    TWILIO_NUMBER = '[your_twilio_phone_number]'
-
-    SQLALCHEMY_DATABASE_URI = 'sqlite://'
-    ```
-
+1. Create Flask application variables
+   
+   ```bash
+   export FLASK_APP=notifications 
+   export FLASK_ENV=development
+   ```
 1. Run the migrations.
 
-    ```
-    python manage.py db upgrade
-    ```
+   ```bash
+   flask db upgrade
+   ```
 
 1. Start the development server.
 
-    ```
-    python manage.py runserver
+    ```bash
+    flask run
     ```
 
 That's it!
@@ -96,7 +94,7 @@ You can run the tests locally through [coverage](http://coverage.readthedocs.org
 1. Run the tests.
 
     ```
-    $ coverage run test.py
+    python test.py
     ```
 
 You can then view the results with `coverage report` or build an HTML report with `coverage html`.
@@ -104,5 +102,5 @@ You can then view the results with `coverage report` or build an HTML report wit
 ## Meta
 
 * No warranty expressed or implied. Software is as is. Diggity.
-* [MIT License](http://www.opensource.org/licenses/mit-license.html)
+* [MIT License](LICENSE)
 * Lovingly crafted by Twilio Developer Education.

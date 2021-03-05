@@ -7,6 +7,7 @@
 
         <p>Use this form to send MMS notifications to any subscribers.</p>
 
+        {% if form %}
         <form method="POST" class="form-horizontal" role="form">
             {% from "_formhelpers.html" import render_errors, render_field %}
             {{ form.csrf_token }}
@@ -30,6 +31,7 @@
                 </div>
             </div>
         </form>
+        {% endif %}
     </div>
 </div><!--/row-->
 
